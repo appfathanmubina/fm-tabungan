@@ -61,12 +61,20 @@
 
       const promptEvent = deferredInstallPrompt;
       deferredInstallPrompt = null;
-      await promptEvent.prompt();
-      const choice = await promptEvent.userChoice;
-      frame.contentWindow.postMessage(
-        { type: 'TABUNGAN_PWA_INSTALL_RESULT', outcome: choice.outcome },
-        event.origin
-      );
+      try {
+        await promptEvent.prompt();
+        const choice = await promptEvent.userChoice;
+        frame.contentWindow.postMessage(
+          { type: 'TABUNGAN_PWA_INSTALL_RESULT', outcome: choice && choice.outcome },
+          event.origin
+        );
+      } catch (error) {
+        console.error('Prompt instalasi PWA gagal:', error);
+        frame.contentWindow.postMessage(
+          { type: 'TABUNGAN_PWA_INSTALL_UNAVAILABLE' },
+          event.origin
+        );
+      }
     });
 
     frame.src = TABUNGAN_APP_SCRIPT_URL;
