@@ -72,6 +72,10 @@
 
       const promptEvent = deferredInstallPrompt;
       deferredInstallPrompt = null;
+      event.source.postMessage(
+        { type: 'TABUNGAN_PWA_INSTALL_PROMPTING' },
+        event.origin
+      );
       try {
         await promptEvent.prompt();
         const choice = await promptEvent.userChoice;
