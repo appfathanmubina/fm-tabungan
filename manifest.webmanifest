@@ -1,0 +1,27 @@
+{
+  "id": "./",
+  "name": "Tabungan FM",
+  "short_name": "Tabungan FM",
+  "description": "Aplikasi Tabungan dan Keuangan Kelas Fathan Mubina",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf8ff",
+  "theme_color": "#8e33f5",
+  "lang": "id-ID",
+  "icons": [
+    {
+      "src": "https://drive.google.com/thumbnail?id=1kRKXd59_H94QqYeT85R_sOjWOAePFjnM&sz=w192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://drive.google.com/thumbnail?id=1kRKXd59_H94QqYeT85R_sOjWOAePFjnM&sz=w512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
