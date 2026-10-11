@@ -34,6 +34,41 @@
   <script>
     const frame = document.getElementById('app');
     const offline = document.getElementById('offline');
+    let deferredInstallPrompt = null;
+
+    // GitHub Pages adalah konteks PWA induk; aplikasi Apps Script berjalan di iframe.
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+    });
+
+    window.addEventListener('message', async event => {
+      if (event.source !== frame.contentWindow ||
+          !event.data ||
+          event.data.type !== 'TABUNGAN_PWA_INSTALL_REQUEST') return;
+
+      if (!deferredInstallPrompt) {
+        frame.contentWindow.postMessage(
+          { type: 'TABUNGAN_PWA_INSTALL_UNAVAILABLE' },
+          event.origin
+        );
+        return;
+      }
+
+      const promptEvent = deferredInstallPrompt;
+      deferredInstallPrompt = null;
+      await promptEvent.prompt();
+      const choice = await promptEvent.userChoice;
+      frame.contentWindow.postMessage(
+        { type: 'TABUNGAN_PWA_INSTALL_RESULT', outcome: choice.outcome },
+        event.origin
+      );
+    });
+
     frame.src = TABUNGAN_APP_SCRIPT_URL;
     frame.addEventListener('error', () => { frame.style.display = 'none'; offline.style.display = 'grid'; });
     if ('serviceWorker' in navigator) {
