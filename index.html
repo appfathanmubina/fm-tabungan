@@ -36,7 +36,7 @@
     const offline = document.getElementById('offline');
     let deferredInstallPrompt = null;
 
-    // GitHub Pages adalah konteks PWA induk; aplikasi Apps Script berjalan di iframe.
+    // GitHub Pages adalah konteks PWA induk; Apps Script dapat memakai iframe bersarang.
     window.addEventListener('beforeinstallprompt', event => {
       event.preventDefault();
       deferredInstallPrompt = event;
@@ -46,13 +46,24 @@
       deferredInstallPrompt = null;
     });
 
+    function isAppsScriptOrigin(origin) {
+      try {
+        const hostname = new URL(origin).hostname;
+        return origin === 'https://script.google.com' ||
+          hostname === 'script.googleusercontent.com' ||
+          hostname.endsWith('-script.googleusercontent.com');
+      } catch (_) {
+        return false;
+      }
+    }
+
     window.addEventListener('message', async event => {
-      if (event.source !== frame.contentWindow ||
+      if (!isAppsScriptOrigin(event.origin) ||
           !event.data ||
           event.data.type !== 'TABUNGAN_PWA_INSTALL_REQUEST') return;
 
       if (!deferredInstallPrompt) {
-        frame.contentWindow.postMessage(
+        event.source.postMessage(
           { type: 'TABUNGAN_PWA_INSTALL_UNAVAILABLE' },
           event.origin
         );
@@ -64,13 +75,13 @@
       try {
         await promptEvent.prompt();
         const choice = await promptEvent.userChoice;
-        frame.contentWindow.postMessage(
+        event.source.postMessage(
           { type: 'TABUNGAN_PWA_INSTALL_RESULT', outcome: choice && choice.outcome },
           event.origin
         );
       } catch (error) {
         console.error('Prompt instalasi PWA gagal:', error);
-        frame.contentWindow.postMessage(
+        event.source.postMessage(
           { type: 'TABUNGAN_PWA_INSTALL_UNAVAILABLE' },
           event.origin
         );
