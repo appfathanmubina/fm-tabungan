@@ -1,9 +1,12 @@
-const CACHE_NAME = 'tabungan-fm-shell-v1';
+const CACHE_NAME = 'tabungan-fm-shell-v2';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './app-config.js'
+  './app-config.js',
+  './assets/icon-192.png',
+  './assets/icon-512.png',
+  './assets/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', event => {
