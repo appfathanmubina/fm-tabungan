@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tabungan-fm-shell-v2';
+const CACHE_NAME = 'tabungan-fm-shell-v3';
 const APP_SHELL = [
   './',
   './index.html',
